@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Slider</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, Inter, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 30px;
+      gap: 20px;
+    }
+
+    .brand {
+      color: #067FF9;
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 48px;
+      font-weight: 600;
+      color: #1C1D21;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f0f0f0;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .arrow:hover {
+      background: #e0e0e0;
+      transform: scale(1.05);
+    }
+
+    .arrow:active {
+      transform: scale(0.95);
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d1d5db;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot:hover {
+      background: #9ca3af;
+    }
+
+    .dot:focus {
+      outline: 2px solid #067FF9;
+      outline-offset: 2px;
+    }
+
+    .dot.active {
+      background: #2563eb;
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .slider {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease;
+      will-change: transform;
+    }
+
+    .slide {
+      min-width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card {
+      padding: 40px 30px;
+      min-height: 200px;
+      color: white;
+    }
+
+    .blue { background: #3D99F5; }
+    .pink { background: #FFD6FF; }
+    .orange { background: #F68851; }
+    .cyan { background: #A8FAFA; }
+    .orchid { background: #D685FF; }
+    .yellow { background: #FFEA85; }
+
+    .blue .number, .blue .label { color: white; }
+    .pink .number, .pink .label { color: #1C1D21; }
+    .orange .number, .orange .label { color: white; }
+    .cyan .number, .cyan .label { color: #1C1D21; }
+    .orchid .number, .orchid .label { color: white; }
+    .yellow .number, .yellow .label { color: #1C1D21; }
+
+    .icon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 20px;
+    }
+
+    .number {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .label {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .profile-card {
+      position: relative;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      padding: 30px;
+      color: white;
+    }
+
+    .profile-card img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .profile-card .mobile-img {
+      display: none;
+    }
+
+    .profile-card .desktop-img {
+      display: block;
+    }
+
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
+    }
+
+    .profile-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .bottom-content {
+      margin-top: auto;
+    }
+
+    .tag {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .description {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      background: transparent;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+    }
+
+    .pause-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .pause-indicator.visible {
+      opacity: 1;
+    }
+
+    @media (max-width: 767px) {
+      .container {
+        padding: 20px;
+        padding-bottom: 70px;
+        position: relative;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .slide {
+        grid-template-columns: 1fr;
+      }
+
+      .column {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .stat-card {
+        padding: 30px 20px;
+        min-height: 180px;
+      }
+
+      .number {
+        font-size: 40px;
+      }
+
+      .profile-card {
+        min-height: 240px;
+        padding: 24px;
+      }
+
+      .profile-card .mobile-img {
+        display: block;
+      }
+
+      .profile-card .desktop-img {
+        display: none;
+      }
+
+      .description {
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .container {
+        padding: 20px;
+        padding-bottom: 70px;
+        position: relative;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .title {
+        font-size: 32px;
+      }
+
+      .slide {
+        grid-template-columns: 1fr;
+      }
+
+      .column {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+
+      .stat-card {
+        padding: 30px 20px;
+        min-height: 180px;
+      }
+
+      .number {
+        font-size: 40px;
+      }
+
+      .profile-card {
+        min-height: 240px;
+        padding: 24px;
+      }
+
+      .profile-card .mobile-img {
+        display: block;
+      }
+
+      .profile-card .desktop-img {
+        display: none;
+      }
+
+      .description {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="brand">Boost Conversions</div>
+        <h2 class="title">Built to support the way modern teams work</h2>
+      </div>
+      <div class="controls">
+        <button class="arrow" id="prev" aria-label="Previous slide"><img src="/left.svg" alt="Previous"></button>
+        <div class="dots" id="dots" role="tablist" aria-label="Slide navigation"></div>
+        <button class="arrow" id="next" aria-label="Next slide"><img src="/right.svg" alt="Next"></button>
+      </div>
+    </div>
+
+    <div class="slider" id="slider">
+      <div class="pause-indicator" id="pauseIndicator">Paused</div>
+      <div class="slides" id="slides" role="region" aria-live="polite">
+        <!-- Slide 1 -->
+        <div class="slide" role="tabpanel">
+          <div class="column">
+            <div class="card stat-card blue">
+              <img class="icon" src="/Vector.svg" alt="Icon">
+              <div class="number">7x</div>
+              <div class="label">Times more efficient</div>
+            </div>
+            
+            <div class="card stat-card pink">
+              <img class="icon" src="/clock.svg" alt="Icon">
+              <div class="number">80</div>
+              <div class="label">Hours saved per week</div>
+            </div>
+          </div>
+
+          <div class="card profile-card">
+            <img class="desktop-img" src="/card1profile.png" alt="Customer Support">
+            <img class="mobile-img" src="/Boost-Conversions-card1-img1-mob 1.png" alt="Customer Support">
+            <div class="profile-content">
+              <div class="tag">Customer Support</div>
+              <div class="bottom-content">
+                <div class="description">Bring all your channels into one simple, secure platform</div>
+                <button class="btn">Learn More ></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card profile-card">
+            <img class="desktop-img" src="/sales-team-img (1) 1.png" alt="Marketing">
+            <img class="mobile-img" src="/sales-team-img-mobile (1) 1.png" alt="Marketing">
+            <div class="profile-content">
+              <div class="tag">Marketing Outreach</div>
+              <div class="bottom-content">
+                <div class="description">Automated personalized outreach at scale</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide" role="tabpanel">
+          <div class="column">
+            <div class="card stat-card orange">
+              <img class="icon" src="/message-circle-more.svg" alt="Icon">
+              <div class="number">98%</div>
+              <div class="label">message delivery success</div>
+            </div>
+            
+            <div class="card stat-card cyan">
+              <img class="icon" src="/Vector copy.svg" alt="Icon">
+              <div class="number">70%</div>
+              <div class="label"> reduction in wait times</div>
+            </div>
+          </div>
+
+          <div class="card profile-card">
+            <img class="desktop-img" src="/marketing-team-img (1) 1.png" alt="Sales">
+            <img class="mobile-img" src="/marketing-team-img-mobile (1) 1.png" alt="Sales">
+            <div class="profile-content">
+              <div class="tag">Marketing Outreach</div>
+              <div class="bottom-content">
+                <div class="description">Run proactive and targeted campaigns.</div>
+                <button class="btn">Learn More ></button>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="card profile-card">
+            <img class="desktop-img" src="/managers-directors-img (1) 1.png" alt="Product">
+            <img class="mobile-img" src="/managers-directors-img-mobile (1) 1.png" alt="Product">
+            <div class="profile-content">
+              <div class="tag">Customer Support</div>
+              <div class="bottom-content">
+                <div class="description">Deliver consistent support across WhatsApp, email, social, and more.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide" role="tabpanel">
+          <div class="column">
+            <div class="card stat-card orchid">
+              <img class="icon" src="/megaphone.svg" alt="Icon">
+              <div class="number">3x</div>
+              <div class="label">improvement in campaign ROI</div>
+            </div>
+            
+            <div class="card stat-card yellow">
+              <img class="icon" src="/shield-user.svg" alt="Icon">
+              <div class="number">60%</div>
+              <div class="label"> improvement in agent utilization</div>
+            </div>
+          </div>
+
+          <div class="card profile-card">
+            <img class="desktop-img" src="/managers-directors-img (1) 1.png" alt="Analytics">
+            <img class="mobile-img" src="/managers-directors-img-mobile (1) 1.png" alt="Analytics">
+            <div class="profile-content">
+              <div class="tag">Sales/Lead Management</div>
+              <div class="bottom-content">
+                <div class="description">Qualify, assign, and follow up on leads effortlessly.</div>
+                <button class="btn">Learn More ></button>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="card profile-card">
+            <img class="desktop-img" src="/card1profile.png" alt="Success">
+            <img class="mobile-img" src="/Boost-Conversions-card1-img1-mob 1.png" alt="Success">
+            <div class="profile-content">
+              <div class="tag">Customer Engagement & Retention</div>
+              <div class="bottom-content">
+                <div class="description">Personalized messages using customer data</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.getElementById('slides');
+    const slider = document.getElementById('slider');
+    const dotsContainer = document.getElementById('dots');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+  
+    let current = 0;
+    const total = 3;
+    let autoPlay;
+  
+    /* ---------- Create dots ---------- */
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goTo(i);
+      dotsContainer.appendChild(dot);
+    }
+  
+    const dots = document.querySelectorAll('.dot');
+  
+    
+    function update() {
+      slides.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((dot, i) =>
+        dot.classList.toggle('active', i === current)
+      );
+    }
+  
+   
+    function goTo(i) {
+      current = i;
+      update();
+    }
+  
+    function next() {
+      current = (current + 1) % total;
+      update();
+    }
+  
+    function prev() {
+      current = (current - 1 + total) % total;
+      update();
+    }
+  
+    prevBtn.onclick = prev;
+    nextBtn.onclick = next;
+  
+    
+    function startAutoPlay() {
+      autoPlay = setInterval(next, 4500);
+    }
+  
+    function stopAutoPlay() {
+      clearInterval(autoPlay);
+    }
+  
+    slider.addEventListener('mouseenter', stopAutoPlay);
+    slider.addEventListener('mouseleave', startAutoPlay);
+  
+    /* ---------- Touch swipe (simple) ---------- */
+    let startX = 0;
+  
+    slides.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      stopAutoPlay();
+    });
+  
+    slides.addEventListener('touchend', e => {
+      const endX = e.changedTouches[0].clientX;
+      if (startX - endX > 50) next();
+      if (endX - startX > 50) prev();
+      startAutoPlay();
+    });
+  
+    
+    startAutoPlay();
+  </script>
+  
+</body>
+</html>
