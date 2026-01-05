@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Responsive Slider</title>
+  <title>Asse</title>
   <style>
     * {
       margin: 0;
@@ -545,7 +545,7 @@
     const total = 3;
     let autoPlay;
   
-    /* ---------- Create dots ---------- */
+    /*Create dots*/
     for (let i = 0; i < total; i++) {
       const dot = document.createElement('button');
       dot.className = 'dot' + (i === 0 ? ' active' : '');
@@ -594,7 +594,7 @@
     slider.addEventListener('mouseenter', stopAutoPlay);
     slider.addEventListener('mouseleave', startAutoPlay);
   
-    /* ---------- Touch swipe (simple) ---------- */
+    /* -- Touch swipe (simple)  */
     let startX = 0;
   
     slides.addEventListener('touchstart', e => {
