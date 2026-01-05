@@ -96,11 +96,6 @@
       background: #9ca3af;
     }
 
-    .dot:focus {
-      outline: 2px solid #067FF9;
-      outline-offset: 2px;
-    }
-
     .dot.active {
       background: #2563eb;
       width: 24px;
@@ -407,9 +402,9 @@
     </div>
 
     <div class="slider" id="slider">
-      <div class="pause-indicator" id="pauseIndicator">Paused</div>
+      <!-- <div class="pause-indicator" id="pauseIndicator">Paused</div> -->
       <div class="slides" id="slides" role="region" aria-live="polite">
-        <!-- Slide 1 -->
+       <!-- Slide 1 -->
         <div class="slide" role="tabpanel">
           <div class="column">
             <div class="card stat-card blue">
@@ -594,7 +589,7 @@
     slider.addEventListener('mouseenter', stopAutoPlay);
     slider.addEventListener('mouseleave', startAutoPlay);
   
-    /* -- Touch swipe (simple)  */
+    /* -- Touch swipe  */
     let startX = 0;
   
     slides.addEventListener('touchstart', e => {
